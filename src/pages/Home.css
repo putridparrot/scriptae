@@ -4,9 +4,9 @@
 
 .blog-header {
   text-align: center;
-  padding: 60px 20px 40px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: var(--spacing-headerPadding);
+  background: var(--header-gradient);
+  color: var(--color-headerText);
   margin-bottom: 40px;
 }
 
@@ -14,6 +14,7 @@
   margin: 0 0 15px 0;
   font-size: 3em;
   font-weight: 700;
+  font-family: var(--font-headings);
 }
 
 .blog-description {
@@ -22,8 +23,22 @@
   margin: 0;
 }
 
+.blog-tagline {
+  font-size: 1em;
+  opacity: 0.85;
+  margin: 10px 0 0 0;
+}
+
+.blog-footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-textLight);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--spacing-postSpacing);
+}
+
 .posts-controls {
-  max-width: 800px;
+  max-width: var(--spacing-contentMaxWidth);
   margin: 0 auto 30px;
   padding: 0 20px;
   display: flex;
@@ -34,7 +49,7 @@
 }
 
 .post-count {
-  color: #7f8c8d;
+  color: var(--color-textLight);
   font-size: 0.9em;
 }
 
@@ -53,18 +68,18 @@
 .posts-limit-input {
   width: 70px;
   padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
   font-size: 0.9em;
 }
 
 .show-all-btn,
 .show-less-btn {
   padding: 8px 16px;
-  background-color: #3498db;
+  background-color: var(--color-accent);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   cursor: pointer;
   font-size: 0.9em;
   transition: background-color 0.2s ease;
@@ -72,13 +87,13 @@
 
 .show-all-btn:hover,
 .show-less-btn:hover {
-  background-color: #2980b9;
+  background-color: var(--color-accentHover);
 }
 
 .loading {
   text-align: center;
   padding: 60px 20px;
-  color: #7f8c8d;
+  color: var(--color-textLight);
   font-size: 1.1em;
 }
 

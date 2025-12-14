@@ -1,18 +1,97 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import PostList from '../components/PostList';
 import { getAllPosts, Post } from '../utils/posts';
+import { loadTemplate, applyTheme, replaceTemplateVars, TemplateConfig } from '../utils/template';
+import { renderHTMLTemplate } from '../utils/templateEngine';
 import './Home.css';
+import '../components/PostList.css';
+import '../components/Post.css';
 
 const Home = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [postsToShow, setPostsToShow] = useState<number>(5);
+  const [template, setTemplate] = useState<TemplateConfig | null>(null);
+  const [renderedHTML, setRenderedHTML] = useState<string>('');
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Re-render when state changes
   useEffect(() => {
-    const loadPosts = async () => {
+    if (!template || posts.length === 0) return;
+
+    const renderPage = async () => {
+      const displayPosts = showAll ? posts : posts.slice(0, postsToShow);
+      const showingPostsText = replaceTemplateVars(template.text.showingPosts, {
+        current: displayPosts.length,
+        total: posts.length
+      });
+
+      // Render header HTML
+      const headerHTML = await renderHTMLTemplate('header', {
+        title: template.site.title,
+        description: template.site.description,
+        tagline: template.site.tagline
+      });
+
+      // Render post list items
+      const postListItems = await Promise.all(
+        displayPosts.map(post =>
+          renderHTMLTemplate('post-list-item', {
+            title: post.frontmatter.title,
+            slug: post.slug,
+            author: post.frontmatter.author,
+            date: new Date(post.frontmatter.date).toLocaleDateString(),
+            excerpt: post.frontmatter.excerpt,
+            draft: post.frontmatter.draft,
+            showExcerpt: template.layout.postList.showExcerpt,
+            showAuthor: template.layout.postList.showAuthor,
+            showDraftIndicator: template.layout.postList.showDraftIndicator,
+            draftIndicatorText: template.layout.postList.draftIndicatorText,
+            readMoreText: template.layout.postList.readMoreText
+          })
+        )
+      );
+
+      const postListHTML = `<div class="post-list">${postListItems.join('')}</div>`;
+
+      // Render home page HTML
+      const html = await renderHTMLTemplate('home', {
+        headerHTML,
+        showControls: template.layout.home.showControls,
+        showPostCount: template.layout.home.showPostCount,
+        showingPostsText,
+        showShowMoreControls: !showAll && posts.length > postsToShow,
+        postsToShowLabel: template.text.postsToShowLabel,
+        postsToShow: postsToShow.toString(),
+        totalPosts: posts.length.toString(),
+        showAllButton: template.text.showAllButton,
+        showShowLessButton: showAll,
+        showLessButton: template.text.showLessButton,
+        postListHTML,
+        footer: template.site.footer
+      });
+
+      setRenderedHTML(html);
+    };
+
+    renderPage();
+  }, [posts, showAll, postsToShow, template]);
+
+  // Load initial data
+  useEffect(() => {
+    const loadData = async () => {
       setLoading(true);
       try {
+        // Load template first
+        const templateConfig = await loadTemplate();
+        setTemplate(templateConfig);
+        applyTheme(templateConfig);
+
+        // Set default posts to show from template
+        setPostsToShow(templateConfig.layout.home.defaultPostsToShow);
+
+        // Load posts
         const allPosts = await getAllPosts();
         setPosts(allPosts);
       } catch (error) {
@@ -22,54 +101,52 @@ const Home = () => {
       }
     };
 
-    loadPosts();
+    loadData();
   }, []);
 
-  if (loading) {
-    return <div className="loading">Loading posts...</div>;
+  // Handle clicks on interactive elements
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const action = target.getAttribute('data-action');
+
+      if (action === 'show-all') {
+        e.preventDefault();
+        setShowAll(true);
+      } else if (action === 'show-less') {
+        e.preventDefault();
+        setShowAll(false);
+      }
+    };
+
+    const handleInput = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      const action = target.getAttribute('data-action');
+
+      if (action === 'change-posts-limit') {
+        const value = Math.max(1, parseInt(target.value) || 1);
+        setPostsToShow(value);
+      }
+    };
+
+    container.addEventListener('click', handleClick);
+    container.addEventListener('input', handleInput);
+
+    return () => {
+      container.removeEventListener('click', handleClick);
+      container.removeEventListener('input', handleInput);
+    };
+  }, []);
+
+  if (loading || !template) {
+    return <div className="loading">{template?.text.loading || 'Loading posts...'}</div>;
   }
 
-  const displayPosts = showAll ? posts : posts.slice(0, postsToShow);
-
   return (
-    <div className="home">
-      <header className="blog-header">
-        <h1>My Blog</h1>
-        <p className="blog-description">
-          A markdown-based blog built with React
-        </p>
-      </header>
-
-      <div className="posts-controls">
-        <div className="post-count">
-          Showing {displayPosts.length} of {posts.length} posts
-        </div>
-        {!showAll && posts.length > postsToShow && (
-          <div className="show-more-controls">
-            <label htmlFor="posts-limit">Posts to show: </label>
-            <input
-              id="posts-limit"
-              type="number"
-              min="1"
-              max={posts.length}
-              value={postsToShow}
-              onChange={(e) => setPostsToShow(Math.max(1, parseInt(e.target.value) || 1))}
-              className="posts-limit-input"
-            />
-            <button onClick={() => setShowAll(true)} className="show-all-btn">
-              Show All Posts
-            </button>
-          </div>
-        )}
-        {showAll && (
-          <button onClick={() => setShowAll(false)} className="show-less-btn">
-            Show Less
-          </button>
-        )}
-      </div>
-
-      <PostList posts={displayPosts} />
-    </div>
+    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: renderedHTML }} />
   );
 };
 

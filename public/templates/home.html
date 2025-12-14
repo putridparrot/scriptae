@@ -1,0 +1,47 @@
+<div class="home">
+  {{headerHTML}}
+
+  {{#if showControls}}
+  <div class="posts-controls">
+    {{#if showPostCount}}
+    <div class="post-count">
+      {{showingPostsText}}
+    </div>
+    {{/if}}
+    
+    {{#if showShowMoreControls}}
+    <div class="show-more-controls">
+      <label for="posts-limit">{{postsToShowLabel}}</label>
+      <input
+        id="posts-limit"
+        type="number"
+        min="1"
+        max="{{totalPosts}}"
+        value="{{postsToShow}}"
+        class="posts-limit-input"
+        data-action="change-posts-limit"
+      />
+      <button class="show-all-btn" data-action="show-all">
+        {{showAllButton}}
+      </button>
+    </div>
+    {{/if}}
+    
+    {{#if showShowLessButton}}
+    <button class="show-less-btn" data-action="show-less">
+      {{showLessButton}}
+    </button>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  <div class="post-list-container">
+    {{postListHTML}}
+  </div>
+
+  {{#if footer}}
+  <footer class="blog-footer">
+    {{footer}}
+  </footer>
+  {{/if}}
+</div>

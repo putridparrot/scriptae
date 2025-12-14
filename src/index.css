@@ -1,12 +1,33 @@
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  /* Default values - will be overridden by template.json */
+  --color-primary: #667eea;
+  --color-secondary: #764ba2;
+  --color-accent: #3498db;
+  --color-accentHover: #2980b9;
+  --color-text: #2c3e50;
+  --color-textLight: #7f8c8d;
+  --color-background: #ffffff;
+  --color-headerText: #ffffff;
+  --color-border: #ddd;
+  --color-draft: #e74c3c;
+  
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-headings: inherit;
+  --font-code: 'Courier New', Courier, monospace;
+  
+  --spacing-headerPadding: 60px 20px 40px;
+  --spacing-contentMaxWidth: 800px;
+  --spacing-postSpacing: 40px;
+  
+  --border-radius: 4px;
+  --header-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  font-family: var(--font-primary);
   line-height: 1.5;
   font-weight: 400;
   
-  color: #213547;
-  background-color: #ffffff;
+  color: var(--color-text);
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

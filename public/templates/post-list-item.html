@@ -1,0 +1,30 @@
+<article class="post-preview">
+  <h2>
+    <a href="/post/{{slug}}">
+      {{title}}
+      {{#if draft}}
+      {{#if showDraftIndicator}}
+      <span class="draft-indicator"> {{draftIndicatorText}}</span>
+      {{/if}}
+      {{/if}}
+    </a>
+  </h2>
+  
+  <div class="post-meta">
+    <span class="post-date">{{date}}</span>
+    
+    {{#if showAuthor}}
+    {{#if author}}
+    <span class="post-author"> by {{author}}</span>
+    {{/if}}
+    {{/if}}
+  </div>
+  
+  {{#if showExcerpt}}
+  {{#if excerpt}}
+  <p class="post-excerpt">{{excerpt}}</p>
+  {{/if}}
+  {{/if}}
+  
+  <a href="/post/{{slug}}" class="read-more">{{readMoreText}}</a>
+</article>

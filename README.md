@@ -6,6 +6,8 @@ A blog engine which generates from your .MD files
 
 - 📝 Markdown-based blog posts with frontmatter support
 - 🎨 Clean, responsive UI built with React and TypeScript
+- 🎨 **Template System** - Customize colors, fonts, layout, and text without touching code
+- 🎭 **HTML Templates** - Design custom post layouts with simple HTML templates
 - 🔍 List last N posts with configurable limit
 - 📂 Organized content structure (posts and drafts)
 - 🐙 GitHub integration for fetching markdown files
@@ -41,6 +43,52 @@ The built files will be in the `dist` directory.
 ```bash
 npm run preview
 ```
+
+## Customization
+
+### Template System
+
+You can customize the entire look and feel of your blog **without touching any code**! Simply edit the `public/template.json` file to change:
+
+- 🎨 **Colors** - Primary, accent, text, background, and more
+- 🔤 **Fonts** - Typography for body text, headings, and code
+- 📐 **Layout** - Control what elements are shown and their behavior
+- 📝 **Text** - Customize all labels, messages, and UI text
+- 🌍 **Localization** - Translate the interface to any language
+
+**Quick Example:**
+```json
+{
+  "site": {
+    "title": "My Awesome Blog",
+    "description": "Thoughts on code and coffee"
+  },
+  "theme": {
+    "colors": {
+      "primary": "#667eea",
+      "accent": "#3498db"
+    }
+  }
+}
+```
+
+📖 **For complete customization guide, see [TEMPLATE.md](TEMPLATE.md)**
+
+### Template Documentation
+
+- 📘 [GETTING-STARTED.md](GETTING-STARTED.md) - Quick start checklist
+- 📖 [TEMPLATE.md](TEMPLATE.md) - Complete customization guide (JSON config)
+- 🎭 [HTML-TEMPLATES.md](HTML-TEMPLATES.md) - HTML template design guide
+- 📋 [TEMPLATE-QUICKREF.md](TEMPLATE-QUICKREF.md) - Quick reference card
+- 🎨 [TEMPLATE-EXAMPLES.md](TEMPLATE-EXAMPLES.md) - Example themes gallery
+- 🔄 [MIGRATION.md](MIGRATION.md) - Migration guide for existing users
+
+### Two Ways to Customize
+
+1. **JSON Configuration** (`public/template.json`) - Change colors, fonts, text, layout options
+2. **HTML Templates** (`public/templates/*.html`) - Design custom post layouts with your own HTML structure
+
+Both systems work together to give you complete control!
 
 ## Adding Blog Posts
 
@@ -129,11 +177,15 @@ const [postsToShow, setPostsToShow] = useState<number>(5); // Change 5 to your p
 
 ### Styling
 
-Customize the appearance by modifying the CSS files:
+**Recommended**: Use the [Template System](#template-system) to customize colors, fonts, and layout without touching code.
+
+**Advanced**: For custom CSS beyond the template system, modify:
 - `src/pages/Home.css` - Home page styles
-- `src/components/Post.css` - Individual post styles (includes draft badge)
-- `src/components/PostList.css` - Post listing styles (includes draft indicator)
-- `src/index.css` - Global styles
+- `src/components/Post.css` - Individual post styles
+- `src/components/PostList.css` - Post listing styles
+- `src/index.css` - Global styles and CSS variables
+
+All CSS files now use CSS custom properties (variables) that are automatically set by the template system.
 
 ## Project Structure
 
@@ -145,6 +197,10 @@ scriptae/
 │   │   └── second-post.md
 │   └── drafts/          # Draft posts
 │       └── work-in-progress.md
+├── public/              # Public assets
+│   ├── template.json    # Template configuration (customize this!)
+│   ├── template-dark.json.example  # Dark theme example
+│   └── README.md        # Template examples guide
 ├── src/
 │   ├── components/       # React components (TypeScript)
 │   │   ├── Post.tsx
@@ -155,12 +211,18 @@ scriptae/
 │   │   ├── Home.tsx
 │   │   └── Home.css
 │   ├── utils/           # Utility functions (TypeScript)
-│   │   └── posts.ts     # Post loading and GitHub integration
+│   │   ├── posts.ts     # Post loading and GitHub integration
+│   │   └── template.ts  # Template loading and utilities
 │   ├── App.tsx          # Main app component with routing
 │   ├── App.css
 │   ├── index.css
 │   ├── main.tsx
 │   └── vite-env.d.ts    # TypeScript declarations
+├── TEMPLATE.md          # Template customization guide
+├── TEMPLATE-QUICKREF.md # Template quick reference
+├── TEMPLATE-EXAMPLES.md # Example templates gallery
+├── GETTING-STARTED.md   # Quick start checklist
+├── MIGRATION.md         # Migration guide
 ├── tsconfig.json        # TypeScript configuration
 ├── tsconfig.node.json   # TypeScript config for Vite
 ├── package.json

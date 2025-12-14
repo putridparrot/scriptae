@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { renderToString } from 'react-dom/server';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getPostBySlug, Post as PostType } from '../utils/posts';
+import { loadTemplate, applyTheme, formatDate, TemplateConfig } from '../utils/template';
+import { renderHTMLTemplate } from '../utils/templateEngine';
 import './Post.css';
 
 const Post = () => {
@@ -10,9 +13,11 @@ const Post = () => {
   const [post, setPost] = useState<PostType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateConfig | null>(null);
+  const [renderedHTML, setRenderedHTML] = useState<string>('');
 
   useEffect(() => {
-    const loadPost = async () => {
+    const loadData = async () => {
       if (!slug) {
         setError('No slug provided');
         setLoading(false);
@@ -23,22 +28,49 @@ const Post = () => {
       setError(null);
       
       try {
+        // Load template first
+        const templateConfig = await loadTemplate();
+        setTemplate(templateConfig);
+        applyTheme(templateConfig);
+        
+        // Load post
         const postData = await getPostBySlug(slug);
         
         if (!postData) {
-          setError('Post not found');
+          setError(templateConfig.text.postNotFound);
         } else {
           setPost(postData);
+          
+          // Render markdown content to HTML string
+          const contentHTML = renderToString(
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {postData.content}
+            </ReactMarkdown>
+          );
+          
+          // Render HTML template
+          const html = await renderHTMLTemplate('post', {
+            title: postData.frontmatter.title,
+            author: postData.frontmatter.author,
+            date: formatDate(new Date(postData.frontmatter.date), templateConfig.layout.post.dateFormat),
+            content: contentHTML,
+            draft: postData.frontmatter.draft,
+            showBackButton: templateConfig.layout.post.showBackButton,
+            showDate: templateConfig.layout.post.showDate,
+            showAuthor: templateConfig.layout.post.showAuthor,
+            backButtonText: templateConfig.layout.post.backButtonText
+          });
+          
+          setRenderedHTML(html);
         }
       } catch (err) {
-        setError('Failed to load post');
-        console.error(err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
     };
 
-    loadPost();
+    loadData();
   }, [slug]);
 
   if (loading) {
@@ -46,46 +78,15 @@ const Post = () => {
   }
 
   if (error) {
-    return (
-      <div className="error">
-        <h2>{error}</h2>
-        <Link to="/">← Back to home</Link>
-      </div>
-    );
+    return <div className="error">{error}</div>;
   }
 
-  if (!post) {
+  if (!post || !template || !renderedHTML) {
     return null;
   }
 
   return (
-    <article className="post">
-      <div className="post-header">
-        <Link to="/" className="back-link">← Back to all posts</Link>
-        {post.frontmatter.draft && (
-          <div className="draft-badge">DRAFT</div>
-        )}
-        <h1>{post.frontmatter.title}</h1>
-        <div className="post-meta">
-          <span className="post-date">
-            {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </span>
-          {post.frontmatter.author && (
-            <span className="post-author"> by {post.frontmatter.author}</span>
-          )}
-        </div>
-      </div>
-      
-      <div className="post-content">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {post.content}
-        </ReactMarkdown>
-      </div>
-    </article>
+    <div dangerouslySetInnerHTML={{ __html: renderedHTML }} />
   );
 };
 
