@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
+import { Post } from '../utils/posts';
 import './PostList.css';
 
-const PostList = ({ posts, limit }) => {
+interface PostListProps {
+  posts: Post[];
+  limit?: number;
+}
+
+const PostList = ({ posts, limit }: PostListProps) => {
   const displayPosts = limit ? posts.slice(0, limit) : posts;
   
   if (!displayPosts || displayPosts.length === 0) {
@@ -13,7 +19,10 @@ const PostList = ({ posts, limit }) => {
       {displayPosts.map((post) => (
         <article key={post.slug} className="post-preview">
           <h2>
-            <Link to={`/post/${post.slug}`}>{post.frontmatter.title}</Link>
+            <Link to={`/post/${post.slug}`}>
+              {post.frontmatter.title}
+              {post.frontmatter.draft && <span className="draft-indicator"> [DRAFT]</span>}
+            </Link>
           </h2>
           <div className="post-meta">
             <span className="post-date">

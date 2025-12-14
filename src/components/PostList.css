@@ -29,6 +29,14 @@
   color: #3498db;
 }
 
+.draft-indicator {
+  color: #f39c12;
+  font-size: 0.6em;
+  font-weight: 600;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
+
 .post-meta {
   color: #7f8c8d;
   font-size: 0.9em;

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import PostList from '../components/PostList';
-import { getAllPosts } from '../utils/posts';
+import { getAllPosts, Post } from '../utils/posts';
 import './Home.css';
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
-  const [postsToShow, setPostsToShow] = useState(5);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showAll, setShowAll] = useState<boolean>(false);
+  const [postsToShow, setPostsToShow] = useState<number>(5);
 
   useEffect(() => {
     const loadPosts = async () => {
