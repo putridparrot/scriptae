@@ -23,16 +23,16 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: #6ce26c;
+  background-color: var(--color-codeGutter, #6ce26c);
   z-index: 1;
 }
 /* Light mode - all text black */
 .code-block-wrapper pre code span {
-  color: black !important;
+  color: var(--color-codeText, black) !important;
 }
 /* Green background for line numbers on highlighted lines */
 .highlighted-line .react-syntax-highlighter-line-number {
-  background-color: #6ce26c !important;
+  background-color: var(--color-codeGutter, #6ce26c) !important;
   color: white !important;
 }
 .inline-code {

@@ -11,6 +11,7 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [postsToShow, setPostsToShow] = useState<number>(5);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const [template, setTemplate] = useState<TemplateConfig | null>(null);
   const [renderedHTML, setRenderedHTML] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,11 +21,17 @@ const Home = () => {
     if (!template || posts.length === 0) return;
 
     const renderPage = async () => {
-      const displayPosts = showAll ? posts : posts.slice(0, postsToShow);
+      const startIndex = currentPage * postsToShow;
+      const endIndex = startIndex + postsToShow;
+      const displayPosts = showAll ? posts : posts.slice(startIndex, endIndex);
       const showingPostsText = replaceTemplateVars(template.text.showingPosts, {
         current: displayPosts.length,
         total: posts.length
       });
+
+      // Pagination controls
+      const hasNewerPosts = currentPage > 0;
+      const hasOlderPosts = endIndex < posts.length;
 
       // Render post list items
       const postListItems = await Promise.all(
@@ -61,6 +68,12 @@ const Home = () => {
         showLessButton: template.text.showLessButton,
         postListHTML,
         footer: template.site.footer,
+        // Pagination
+        showPagination: !showAll && (hasNewerPosts || hasOlderPosts),
+        showNewerPosts: hasNewerPosts,
+        showOlderPosts: hasOlderPosts,
+        newerPostsButton: template.text.newerPostsButton,
+        olderPostsButton: template.text.olderPostsButton,
         // Include site data for nested templates
         ...template.site
       });
@@ -69,7 +82,7 @@ const Home = () => {
     };
 
     renderPage();
-  }, [posts, showAll, postsToShow, template]);
+  }, [posts, showAll, postsToShow, currentPage, template]);
 
   // Load initial data
   useEffect(() => {
@@ -109,9 +122,17 @@ const Home = () => {
       if (action === 'show-all') {
         e.preventDefault();
         setShowAll(true);
+        setCurrentPage(0);
       } else if (action === 'show-less') {
         e.preventDefault();
         setShowAll(false);
+        setCurrentPage(0);
+      } else if (action === 'newer-posts') {
+        e.preventDefault();
+        setCurrentPage(prev => Math.max(0, prev - 1));
+      } else if (action === 'older-posts') {
+        e.preventDefault();
+        setCurrentPage(prev => prev + 1);
       }
     };
 
@@ -122,6 +143,7 @@ const Home = () => {
       if (action === 'change-posts-limit') {
         const value = Math.max(1, parseInt(target.value) || 1);
         setPostsToShow(value);
+        setCurrentPage(0);
       }
     };
 
@@ -132,7 +154,7 @@ const Home = () => {
       container.removeEventListener('click', handleClick);
       container.removeEventListener('input', handleInput);
     };
-  }, []);
+  }, [renderedHTML]); // Re-attach event listeners when HTML changes
 
   if (loading || !template) {
     return <div className="loading">{template?.text.loading || 'Loading posts...'}</div>;

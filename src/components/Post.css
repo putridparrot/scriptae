@@ -43,7 +43,7 @@
 
 .post-content {
   line-height: 1.7;
-  color: #333;
+  color: var(--color-text);
   font-size: 1em;
 }
 
@@ -78,12 +78,14 @@
 
 .post-content p {
   margin: 15px 0;
+  color: var(--color-text);
 }
 
 .post-content ul,
 .post-content ol {
   margin: 15px 0;
   padding-left: 30px;
+  color: var(--color-text);
 }
 
 .post-content li {
@@ -91,11 +93,12 @@
 }
 
 .post-content code {
-  background-color: #f5f5f5;
+  background-color: var(--color-codeBackground);
   padding: 2px 6px;
   border-radius: 3px;
   font-family: var(--font-code);
   font-size: 0.9em;
+  color: var(--color-codeText);
 }
 
 .post-content pre code {
@@ -104,15 +107,15 @@
 }
 
 .post-content blockquote {
-  border-left: 4px solid #3498db;
+  border-left: 4px solid var(--color-accent);
   padding-left: 20px;
   margin: 20px 0;
-  color: #555;
+  color: var(--color-textLight);
   font-style: italic;
 }
 
 .post-content a {
-  color: #3498db;
+  color: var(--color-accent);
   text-decoration: none;
 }
 

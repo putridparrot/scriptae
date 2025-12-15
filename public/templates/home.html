@@ -39,6 +39,17 @@
     {{postListHTML}}
   </div>
 
+  {{#if showPagination}}
+  <div class="pagination">
+    {{#if showNewerPosts}}
+    <a href="#" class="pagination-link newer" data-action="newer-posts">{{newerPostsButton}}</a>
+    {{/if}}
+    {{#if showOlderPosts}}
+    <a href="#" class="pagination-link older" data-action="older-posts">{{olderPostsButton}}</a>
+    {{/if}}
+  </div>
+  {{/if}}
+
   {{#if footer}}
   <footer class="blog-footer">
     {{footer}}

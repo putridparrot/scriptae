@@ -1,0 +1,69 @@
+{
+  "site": {
+    "title": "My Blog",
+    "description": "A markdown-based blog built with React",
+    "tagline": "",
+    "footer": ""
+  },
+  "theme": {
+    "colors": {
+      "primary": "#667eea",
+      "secondary": "#764ba2",
+      "accent": "#3498db",
+      "accentHover": "#2980b9",
+      "text": "#2c3e50",
+      "textLight": "#7f8c8d",
+      "background": "#ffffff",
+      "headerText": "#ffffff",
+      "border": "#ddd",
+      "draft": "#e74c3c"
+    },
+    "fonts": {
+      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "headings": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "code": "Consolas, Monaco, 'Courier New', monospace"
+    },
+    "spacing": {
+      "headerPadding": "60px 20px 40px",
+      "contentMaxWidth": "800px",
+      "postSpacing": "40px"
+    },
+    "borderRadius": "4px",
+    "headerGradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+  },
+  "layout": {
+    "home": {
+      "showPostCount": true,
+      "showControls": true,
+      "defaultPostsToShow": 5,
+      "dateFormat": "long"
+    },
+    "post": {
+      "showAuthor": true,
+      "showDate": true,
+      "showBackButton": true,
+      "backButtonText": "← Back to Home",
+      "dateFormat": "long"
+    },
+    "postList": {
+      "showExcerpt": true,
+      "showAuthor": true,
+      "showDraftIndicator": true,
+      "draftIndicatorText": "[DRAFT]",
+      "readMoreText": "Read more →"
+    }
+  },
+  "text": {
+    "loading": "Loading posts...",
+    "loadingPost": "Loading...",
+    "noPostsFound": "No posts found.",
+    "postNotFound": "Post not found",
+    "errorLoading": "Failed to load post",
+    "showingPosts": "Showing {current} of {total} posts",
+    "postsToShowLabel": "Posts to show: ",
+    "showAllButton": "Show All",
+    "showLessButton": "Show Less",
+    "newerPostsButton": "← Newer Posts",
+    "olderPostsButton": "Older Posts →"
+  }
+}

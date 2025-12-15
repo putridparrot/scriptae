@@ -97,6 +97,39 @@
   font-size: 1.1em;
 }
 
+.pagination {
+  max-width: var(--spacing-contentMaxWidth);
+  margin: 30px auto;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-link {
+  padding: 10px 20px;
+  background-color: var(--color-accent);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-size: 0.95em;
+  transition: background-color 0.2s ease;
+  display: inline-block;
+}
+
+.pagination-link:hover {
+  background-color: var(--color-accentHover);
+}
+
+.pagination-link.newer {
+  margin-right: auto;
+}
+
+.pagination-link.older {
+  margin-left: auto;
+}
+
 @media (max-width: 600px) {
   .blog-header h1 {
     font-size: 2em;

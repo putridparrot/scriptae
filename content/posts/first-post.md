@@ -26,4 +26,25 @@ Stay tuned for more posts about:
 2. React tips and tricks
 3. Software engineering best practices
 
+## Example Table
+
+Here's a sample comparison table:
+
+| Feature | JavaScript | TypeScript | Python | Java | C# |
+|---------|-----------|-----------|--------|------|-----|
+| Type Safety | Dynamic | Static | Dynamic | Static | Static |
+| Learning Curve | Easy | Moderate | Easy | Moderate | Moderate |
+| Performance | Fast | Fast | Moderate | Fast | Fast |
+
+## Key Points to Remember
+
+When working with markdown-based blogs, keep these tips in mind:
+
+- Always use descriptive titles for better SEO
+- Keep paragraphs short and scannable
+- Use headings to organize content hierarchically
+- Include code examples when discussing technical topics
+- Add images and tables to break up text
+- Proofread before publishing
+
 Thanks for reading!

@@ -63,6 +63,8 @@ export interface TemplateConfig {
     postsToShowLabel: string;
     showAllButton: string;
     showLessButton: string;
+    newerPostsButton: string;
+    olderPostsButton: string;
   };
 }
 
@@ -95,7 +97,29 @@ export function setThemePreference(theme: 'light' | 'dark'): void {
 }
 
 /**
+ * Deep merge two objects
+ */
+function deepMerge<T>(base: T, override: Partial<T>): T {
+  const result = { ...base };
+  
+  for (const key in override) {
+    const overrideValue = override[key];
+    const baseValue = result[key];
+    
+    if (overrideValue && typeof overrideValue === 'object' && !Array.isArray(overrideValue) &&
+        baseValue && typeof baseValue === 'object' && !Array.isArray(baseValue)) {
+      (result as any)[key] = deepMerge(baseValue, overrideValue);
+    } else if (overrideValue !== undefined) {
+      (result as any)[key] = overrideValue;
+    }
+  }
+  
+  return result;
+}
+
+/**
  * Load the template configuration from the public folder
+ * First loads base template.json, then merges theme-specific overrides
  */
 export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateConfig> {
   const selectedTheme = theme || getThemePreference();
@@ -111,11 +135,26 @@ export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateCo
   }
 
   try {
-    const response = await fetch(`/templates/template-${selectedTheme}.json`);
-    if (!response.ok) {
-      throw new Error('Failed to load template');
+    // Load base template
+    const baseResponse = await fetch('/templates/template.json');
+    if (!baseResponse.ok) {
+      throw new Error('Failed to load base template');
     }
-    cachedTemplate = await response.json();
+    const baseTemplate = await baseResponse.json();
+    
+    // Load theme-specific overrides
+    const themeResponse = await fetch(`/templates/template-${selectedTheme}.json`);
+    if (!themeResponse.ok) {
+      // If theme-specific template doesn't exist, just use the base template
+      console.log(`No theme-specific template found for ${selectedTheme}, using base template`);
+      cachedTemplate = baseTemplate as TemplateConfig;
+      currentTheme = selectedTheme;
+      return cachedTemplate;
+    }
+    const themeOverrides = await themeResponse.json();
+    
+    // Merge base with theme overrides
+    cachedTemplate = deepMerge(baseTemplate, themeOverrides);
     currentTheme = selectedTheme;
     return cachedTemplate as TemplateConfig;
   } catch (error) {
@@ -245,7 +284,9 @@ function getDefaultTemplate(): TemplateConfig {
       showingPosts: "Showing {current} of {total} posts",
       postsToShowLabel: "Posts to show: ",
       showAllButton: "Show All",
-      showLessButton: "Show Less"
+      showLessButton: "Show Less",
+      newerPostsButton: "← Newer Posts",
+      olderPostsButton: "Older Posts →"
     }
   };
 }

@@ -1,67 +1,21 @@
 {
-  "site": {
-    "title": "My Blog",
-    "description": "A markdown-based blog built with React",
-    "tagline": "",
-    "footer": ""
-  },
   "theme": {
     "colors": {
-      "primary": "#1a1a2e",
-      "secondary": "#16213e",
-      "accent": "#4a9eff",
-      "accentHover": "#3d8ae6",
-      "text": "#e4e4e4",
-      "textLight": "#a0a0a0",
-      "background": "#0f0f0f",
+      "primary": "#8b5cf6",
+      "secondary": "#a78bfa",
+      "accent": "#60a5fa",
+      "accentHover": "#3b82f6",
+      "text": "#ffffff",
+      "textLight": "#9ca3af",
+      "background": "#1f2937",
       "headerText": "#ffffff",
-      "border": "#333",
-      "draft": "#ff6b6b"
+      "border": "#374151",
+      "draft": "#ef4444",
+      "codeText": "#ffffff",
+      "codeBackground": "#111827",
+      "codeGutter": "#6ce26c",
+      "codeLineNumber": "#9ca3af"
     },
-    "fonts": {
-      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      "headings": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-      "code": "Consolas, Monaco, 'Courier New', monospace"
-    },
-    "spacing": {
-      "headerPadding": "60px 20px 40px",
-      "contentMaxWidth": "800px",
-      "postSpacing": "40px"
-    },
-    "borderRadius": "4px",
-    "headerGradient": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
-  },
-  "layout": {
-    "home": {
-      "showPostCount": true,
-      "showControls": true,
-      "defaultPostsToShow": 5,
-      "dateFormat": "long"
-    },
-    "post": {
-      "showAuthor": true,
-      "showDate": true,
-      "showBackButton": true,
-      "backButtonText": "← Back to Home",
-      "dateFormat": "long"
-    },
-    "postList": {
-      "showExcerpt": true,
-      "showAuthor": true,
-      "showDraftIndicator": true,
-      "draftIndicatorText": "[DRAFT]",
-      "readMoreText": "Read more →"
-    }
-  },
-  "text": {
-    "loading": "Loading posts...",
-    "loadingPost": "Loading...",
-    "noPostsFound": "No posts found.",
-    "postNotFound": "Post not found",
-    "errorLoading": "Failed to load post",
-    "showingPosts": "Showing {current} of {total} posts",
-    "postsToShowLabel": "Posts to show: ",
-    "showAllButton": "Show All",
-    "showLessButton": "Show Less"
+    "headerGradient": "#0a1929"
   }
 }
