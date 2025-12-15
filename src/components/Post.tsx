@@ -54,11 +54,16 @@ const Post = () => {
             </ReactMarkdown>
           );
           
+          // Normalize base URL
+          let baseUrl = import.meta.env.BASE_URL || '/';
+          baseUrl = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
+          
           // Render HTML template
           const html = await renderHTMLTemplate('post', {
             // Include site data for nested templates first
             ...templateConfig.site,
             // Post-specific data (overwrites any conflicting site properties)
+            baseUrl,
             title: postData.frontmatter.title,
             author: postData.frontmatter.author,
             date: formatDate(new Date(postData.frontmatter.date), templateConfig.layout.post.dateFormat),
