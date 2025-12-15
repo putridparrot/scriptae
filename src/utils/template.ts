@@ -4,6 +4,8 @@ export interface TemplateConfig {
     description: string;
     tagline?: string;
     footer?: string;
+    siteTitle?: string;
+    logoPath?: string;
   };
   content: {
     source: 'local' | 'github';
@@ -26,6 +28,9 @@ export interface TemplateConfig {
       headerText: string;
       border: string;
       draft: string;
+      tableBorder?: string;
+      tableHeaderBg?: string;
+      tableRowHover?: string;
     };
     fonts: {
       primary: string;

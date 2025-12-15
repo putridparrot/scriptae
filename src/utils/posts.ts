@@ -14,28 +14,46 @@ export interface Post {
   content: string;
 }
 
-interface GlobResult {
-  [key: string]: string;
+export interface PostMetadata {
+  slug: string;
+  frontmatter: PostFrontmatter;
 }
 
-// Function to get all published posts from the posts directory
-export const getAllPosts = async (): Promise<Post[]> => {
-  const posts = import.meta.glob('/content/posts/*.md', { 
-    query: '?raw', 
-    import: 'default', 
-    eager: true 
-  }) as GlobResult;
+// Lazy content loaders - only loaded when needed
+const postContentLoaders = import.meta.glob('/content/posts/*.md', { 
+  query: '?raw', 
+  import: 'default'
+});
+
+const draftContentLoaders = import.meta.glob('/content/drafts/*.md', { 
+  query: '?raw', 
+  import: 'default'
+});
+
+// Separate metadata extraction - lightweight
+const extractMetadata = (content: string, slug: string, isDraft = false): PostMetadata => {
+  const { data } = matter(content);
+  return {
+    slug,
+    frontmatter: isDraft ? { ...data, draft: true } as PostFrontmatter : data as PostFrontmatter,
+  };
+};
+
+// Function to get all post metadata (lightweight - for list view)
+export const getAllPostsMetadata = async (): Promise<PostMetadata[]> => {
+  const postPaths = Object.keys(postContentLoaders);
   
-  const postList: Post[] = Object.entries(posts).map(([path, content]) => {
-    const { data, content: markdown } = matter(content);
+  // Load only metadata by parsing frontmatter
+  const postMetadataPromises = postPaths.map(async (path) => {
+    const loader = postContentLoaders[path];
+    if (!loader) return null;
+    const content = await loader() as string;
     const slug = path.replace('/content/posts/', '').replace('.md', '');
-    
-    return {
-      slug,
-      frontmatter: data as PostFrontmatter,
-      content: markdown,
-    };
+    return extractMetadata(content, slug);
   });
+  
+  const results = await Promise.all(postMetadataPromises);
+  const postList = results.filter((p): p is PostMetadata => p !== null);
   
   // Sort by date (newest first)
   return postList.sort((a, b) => {
@@ -45,24 +63,20 @@ export const getAllPosts = async (): Promise<Post[]> => {
   });
 };
 
-// Function to get all drafts from the drafts directory
-export const getAllDrafts = async (): Promise<Post[]> => {
-  const drafts = import.meta.glob('/content/drafts/*.md', { 
-    query: '?raw', 
-    import: 'default', 
-    eager: true 
-  }) as GlobResult;
+// Function to get all draft metadata
+export const getAllDraftsMetadata = async (): Promise<PostMetadata[]> => {
+  const draftPaths = Object.keys(draftContentLoaders);
   
-  const draftList: Post[] = Object.entries(drafts).map(([path, content]) => {
-    const { data, content: markdown } = matter(content);
+  const draftMetadataPromises = draftPaths.map(async (path) => {
+    const loader = draftContentLoaders[path];
+    if (!loader) return null;
+    const content = await loader() as string;
     const slug = path.replace('/content/drafts/', '').replace('.md', '');
-    
-    return {
-      slug,
-      frontmatter: { ...data, draft: true } as PostFrontmatter,
-      content: markdown,
-    };
+    return extractMetadata(content, slug, true);
   });
+  
+  const results = await Promise.all(draftMetadataPromises);
+  const draftList = results.filter((d): d is PostMetadata => d !== null);
   
   // Sort by date (newest first)
   return draftList.sort((a, b) => {
@@ -72,48 +86,61 @@ export const getAllDrafts = async (): Promise<Post[]> => {
   });
 };
 
-// Function to get a single post by slug (checks both posts and drafts)
+// Legacy function - loads full posts (kept for backward compatibility)
+export const getAllPosts = async (): Promise<Post[]> => {
+  const metadata = await getAllPostsMetadata();
+  const posts = await Promise.all(
+    metadata.map(async (meta) => {
+      const content = await getPostContent(meta.slug);
+      return {
+        ...meta,
+        content
+      };
+    })
+  );
+  return posts;
+};
+
+// Function to get post content by slug (lazy loaded)
+export const getPostContent = async (slug: string): Promise<string> => {
+  const postPath = `/content/posts/${slug}.md`;
+  const draftPath = `/content/drafts/${slug}.md`;
+  
+  // Try posts first
+  if (postContentLoaders[postPath]) {
+    const content = await postContentLoaders[postPath]() as string;
+    const { content: markdown } = matter(content);
+    return markdown;
+  }
+  
+  // Try drafts
+  if (draftContentLoaders[draftPath]) {
+    const content = await draftContentLoaders[draftPath]() as string;
+    const { content: markdown } = matter(content);
+    return markdown;
+  }
+  
+  throw new Error(`Post not found: ${slug}`);
+};
+
+// Function to get a single post by slug with full content
 export const getPostBySlug = async (slug: string): Promise<Post | null> => {
   try {
-    // Try to find in posts first
-    const posts = import.meta.glob('/content/posts/*.md', { 
-      query: '?raw', 
-      import: 'default', 
-      eager: true 
-    }) as GlobResult;
+    // Get metadata for this slug
+    const allMetadata = [...await getAllPostsMetadata(), ...await getAllDraftsMetadata()];
+    const metadata = allMetadata.find(m => m.slug === slug);
     
-    const postPath = `/content/posts/${slug}.md`;
-    
-    if (posts[postPath]) {
-      const { data, content } = matter(posts[postPath]);
-      
-      return {
-        slug,
-        frontmatter: data as PostFrontmatter,
-        content,
-      };
+    if (!metadata) {
+      return null;
     }
     
-    // If not found in posts, try drafts
-    const drafts = import.meta.glob('/content/drafts/*.md', { 
-      query: '?raw', 
-      import: 'default', 
-      eager: true 
-    }) as GlobResult;
+    // Load content lazily
+    const content = await getPostContent(slug);
     
-    const draftPath = `/content/drafts/${slug}.md`;
-    
-    if (drafts[draftPath]) {
-      const { data, content } = matter(drafts[draftPath]);
-      
-      return {
-        slug,
-        frontmatter: { ...data, draft: true } as PostFrontmatter,
-        content,
-      };
-    }
-    
-    return null;
+    return {
+      ...metadata,
+      content
+    };
   } catch (error) {
     console.error('Error loading post:', error);
     return null;

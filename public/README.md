@@ -15,6 +15,13 @@ A dark theme example with:
 - Modified text labels
 - Short date format
 
+### template-custom-branding.json.example
+Demonstrates custom branding configuration:
+- Custom site title for browser tab
+- Custom logo/favicon path
+- Example footer text
+- Full site configuration
+
 ### How to Use Examples
 
 To use an example template:

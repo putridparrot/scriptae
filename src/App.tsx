@@ -15,6 +15,19 @@ function App() {
       const theme = getThemePreference();
       const templateConfig = await loadTemplate(theme);
       applyTheme(templateConfig);
+      
+      // Set document title from template config
+      if (templateConfig.site.siteTitle) {
+        document.title = templateConfig.site.siteTitle;
+      }
+      
+      // Update favicon if logoPath is specified
+      if (templateConfig.site.logoPath) {
+        const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+        if (favicon) {
+          favicon.href = templateConfig.site.logoPath;
+        }
+      }
     };
     initTheme();
   }, []);

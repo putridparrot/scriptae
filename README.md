@@ -72,6 +72,7 @@ This approach minimizes duplication - colors go in theme files, everything else 
 
 - 🎨 **Colors** - Primary, accent, text, background, code blocks, and more (in theme files)
 - 🔤 **Fonts** - Typography for body text, headings, and code (in base template)
+- 🏷️ **Branding** - Site title (browser tab), logo/favicon path
 - 📐 **Layout** - Control what elements are shown and their behavior
 - 📝 **Text** - Customize all labels, messages, and UI text
 - 🌍 **Localization** - Translate the interface to any language

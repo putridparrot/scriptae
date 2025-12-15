@@ -8,12 +8,14 @@
 - [ ] **Step 2**: Make a simple change
   - Change `"title": "My Blog"` to your blog's name
   - Change `"description"` to your tagline
+  - Set `"siteTitle"` to customize the browser tab title
+  - Update `"logoPath"` if you have a custom logo/favicon
   
 - [ ] **Step 3**: Refresh browser
   - Hard refresh: `Ctrl+Shift+R` (Windows) or `Cmd+Shift+R` (Mac)
   
 - [ ] **Step 4**: See your changes
-  - Your new title should appear in the header!
+  - Your new title should appear in the header and browser tab!
 
 ---
 

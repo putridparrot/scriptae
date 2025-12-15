@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { getAllPosts, fetchFromGitHub, Post } from '../utils/posts';
+import { getAllPostsMetadata, fetchFromGitHub, PostMetadata } from '../utils/posts';
 import { loadTemplate, replaceTemplateVars, TemplateConfig, getThemePreference } from '../utils/template';
 import PostList from '../components/PostList';
 import './Home.css';
@@ -7,7 +7,7 @@ import '../components/PostList.css';
 import '../components/Post.css';
 
 const Home = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostMetadata[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAll, setShowAll] = useState<boolean>(false);
   const [postsToShow, setPostsToShow] = useState<number>(5);
@@ -27,12 +27,13 @@ const Home = () => {
         setPostsToShow(templateConfig.layout.home.defaultPostsToShow);
 
         // Load posts based on configured source
-        let allPosts: Post[];
+        let allPosts: PostMetadata[];
         if (templateConfig.content.source === 'github' && templateConfig.content.github) {
           const { owner, repo, postsPath } = templateConfig.content.github;
           allPosts = await fetchFromGitHub(owner, repo, postsPath);
         } else {
-          allPosts = await getAllPosts();
+          // Use metadata-only loading for better performance
+          allPosts = await getAllPostsMetadata();
         }
         
         setPosts(allPosts);
@@ -141,7 +142,11 @@ const Home = () => {
       )}
 
       <div className="post-list-container">
-        <PostList posts={displayPosts} template={template} />
+        <PostList 
+          posts={displayPosts} 
+          template={template} 
+          useVirtualScrolling={showAll}
+        />
       </div>
 
       {!showAll && (hasNewerPosts || hasOlderPosts) && (

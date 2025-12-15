@@ -59,7 +59,9 @@ Located in the `"site"` section:
   "title": "My Blog",                                    // Main blog title
   "description": "A markdown-based blog built with React", // Subtitle
   "tagline": "",                                         // Optional additional text
-  "footer": ""                                           // Optional footer text
+  "footer": "",                                          // Optional footer text
+  "siteTitle": "scriptae",                               // Browser tab title (optional)
+  "logoPath": "/logo.svg"                                // Path to favicon/logo (optional)
 }
 ```
 
@@ -69,9 +71,15 @@ Located in the `"site"` section:
   "title": "Tech Insights",
   "description": "Exploring the world of software development",
   "tagline": "Code, Coffee, and Creativity",
-  "footer": "© 2025 Tech Insights. All rights reserved."
+  "footer": "© 2025 Tech Insights. All rights reserved.",
+  "siteTitle": "Tech Insights Blog",
+  "logoPath": "/custom-logo.svg"
 }
 ```
+
+**Notes**:
+- `siteTitle` - Sets the browser tab/window title. If not specified, defaults to "scriptae"
+- `logoPath` - Path to your favicon/logo file. Relative to the `public` folder. Supports `.svg`, `.png`, `.ico` formats
 
 ### Theme Colors
 
@@ -88,9 +96,17 @@ Located in `"theme" → "colors"`:
   "background": "#ffffff",    // Page background
   "headerText": "#ffffff",    // Text color in header
   "border": "#ddd",           // Border colors
-  "draft": "#e74c3c"          // Draft indicator color
+  "draft": "#e74c3c",         // Draft indicator color
+  "tableBorder": "#ddd",      // Table border and cell divider color (optional)
+  "tableHeaderBg": "rgba(102, 126, 234, 0.1)",  // Table header background (optional)
+  "tableRowHover": "rgba(102, 126, 234, 0.05)"  // Table row hover color (optional)
 }
 ```
+
+**Notes on Table Colors**:
+- If `tableBorder`, `tableHeaderBg`, or `tableRowHover` are not specified, they use default values
+- `tableBorder` defaults to same as `border`
+- Use rgba values for `tableHeaderBg` and `tableRowHover` for subtle effects
 
 **Dark Theme Example**:
 ```json
@@ -104,7 +120,10 @@ Located in `"theme" → "colors"`:
   "background": "#0f0f0f",
   "headerText": "#ffffff",
   "border": "#333",
-  "draft": "#ff6b6b"
+  "draft": "#ff6b6b",
+  "tableBorder": "#444",
+  "tableHeaderBg": "rgba(102, 126, 234, 0.15)",
+  "tableRowHover": "rgba(102, 126, 234, 0.1)"
 }
 ```
 

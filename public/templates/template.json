@@ -25,7 +25,10 @@
       "background": "#ffffff",
       "headerText": "#ffffff",
       "border": "#ddd",
-      "draft": "#e74c3c"
+      "draft": "#e74c3c",
+      "tableBorder": "#ddd",
+      "tableHeaderBg": "rgba(102, 126, 234, 0.1)",
+      "tableRowHover": "rgba(102, 126, 234, 0.05)"
     },
     "fonts": {
       "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
