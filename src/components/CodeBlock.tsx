@@ -57,8 +57,7 @@ const CodeBlock = ({ children, className, inline }: CodeBlockProps) => {
         lineProps={(lineNumber) => {
           const style: React.CSSProperties = { 
             display: 'block',
-            paddingLeft: '0.8em',
-            paddingRight: '0.8em',
+            paddingRight: '0.8em',          
           };
           const props: any = { style };
           if (linesToHighlight.includes(lineNumber)) {
@@ -72,7 +71,7 @@ const CodeBlock = ({ children, className, inline }: CodeBlockProps) => {
           padding: '1em',
           backgroundColor: '#ffffff',
           border: 'none',
-          borderRadius: '3px',
+          borderRadius: 'px',
           fontSize: '1.2em',
           lineHeight: '1.5',
           fontFamily: 'Monaco, "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace',

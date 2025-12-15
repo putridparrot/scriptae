@@ -19,12 +19,16 @@
 .code-block-wrapper pre code::before {
   content: '';
   position: absolute;
-  left: calc(3em + 0.5em);
+  left: 2.7em;
   top: 0;
   bottom: 0;
   width: 2px;
   background-color: #6ce26c;
   z-index: 1;
+}
+/* Light mode - all text black */
+.code-block-wrapper pre code span {
+  color: black !important;
 }
 /* Green background for line numbers on highlighted lines */
 .highlighted-line .react-syntax-highlighter-line-number {
@@ -49,6 +53,14 @@
 
 [data-theme="dark"] .code-block-wrapper div[style*="backgroundColor"] {
   background-color: #1e1e1e !important;
+}
+
+[data-theme="dark"] .code-block-wrapper pre code {
+  color: white !important;
+}
+
+[data-theme="dark"] .code-block-wrapper pre code span {
+  color: white !important;
 }
 
 [data-theme="dark"] .inline-code {
