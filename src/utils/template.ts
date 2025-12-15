@@ -5,6 +5,15 @@ export interface TemplateConfig {
     tagline?: string;
     footer?: string;
   };
+  content: {
+    source: 'local' | 'github';
+    github?: {
+      owner: string;
+      repo: string;
+      postsPath: string;
+      draftsPath?: string;
+    };
+  };
   theme: {
     colors: {
       primary: string;

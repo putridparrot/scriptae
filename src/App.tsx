@@ -17,7 +17,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <ThemeSwitcher onThemeChange={handleThemeChange} />
       <Routes>
         <Route path="/" element={<Home />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { getAllPosts, Post } from '../utils/posts';
+import { getAllPosts, fetchFromGitHub, Post } from '../utils/posts';
 import { loadTemplate, applyTheme, replaceTemplateVars, TemplateConfig } from '../utils/template';
 import { renderHTMLTemplate } from '../utils/templateEngine';
 import './Home.css';
@@ -97,8 +97,15 @@ const Home = () => {
         // Set default posts to show from template
         setPostsToShow(templateConfig.layout.home.defaultPostsToShow);
 
-        // Load posts
-        const allPosts = await getAllPosts();
+        // Load posts based on configured source
+        let allPosts: Post[];
+        if (templateConfig.content.source === 'github' && templateConfig.content.github) {
+          const { owner, repo, postsPath } = templateConfig.content.github;
+          allPosts = await fetchFromGitHub(owner, repo, postsPath);
+        } else {
+          allPosts = await getAllPosts();
+        }
+        
         setPosts(allPosts);
       } catch (error) {
         console.error('Error loading posts:', error);
