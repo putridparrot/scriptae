@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Post from './components/Post';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import { loadTemplate, applyTheme } from './utils/template';
 import './App.css';
+
+// Lazy load Post component for code splitting
+const Post = lazy(() => import('./components/Post'));
 
 function App() {
   const [, setThemeVersion] = useState(0);
@@ -19,10 +21,12 @@ function App() {
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <ThemeSwitcher onThemeChange={handleThemeChange} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/post/:slug" element={<Post />} />
-      </Routes>
+      <Suspense fallback={<div className="loading">Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/post/:slug" element={<Post />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

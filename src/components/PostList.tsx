@@ -1,43 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Post } from '../utils/posts';
 import { TemplateConfig, formatDate } from '../utils/template';
-import { renderHTMLTemplate } from '../utils/templateEngine';
 import './PostList.css';
 
 interface PostListProps {
   posts: Post[];
   template: TemplateConfig;
   limit?: number;
+  baseUrl?: string;
 }
 
-const PostList = ({ posts, template, limit }: PostListProps) => {
-  const displayPosts = limit ? posts.slice(0, limit) : posts;
-  const [renderedItems, setRenderedItems] = useState<string[]>([]);
-  
-  useEffect(() => {
-    const renderPosts = async () => {
-      const items = await Promise.all(
-        displayPosts.map(post => 
-          renderHTMLTemplate('post-list-item', {
-            title: post.frontmatter.title,
-            slug: post.slug,
-            author: post.frontmatter.author,
-            date: formatDate(new Date(post.frontmatter.date), template.layout.home.dateFormat),
-            excerpt: post.frontmatter.excerpt,
-            draft: post.frontmatter.draft,
-            showExcerpt: template.layout.postList.showExcerpt,
-            showAuthor: template.layout.postList.showAuthor,
-            showDraftIndicator: template.layout.postList.showDraftIndicator,
-            draftIndicatorText: template.layout.postList.draftIndicatorText,
-            readMoreText: template.layout.postList.readMoreText
-          })
-        )
-      );
-      setRenderedItems(items);
-    };
-    
-    renderPosts();
-  }, [displayPosts, template]);
+const PostList = ({ posts, template, limit, baseUrl: providedBaseUrl }: PostListProps) => {
+  // Normalize base URL: remove trailing slash, ensure we don't create double slashes
+  const baseUrl = useMemo(() => {
+    const base = providedBaseUrl ?? (import.meta.env.BASE_URL || '/');
+    return base === '/' ? '' : base.replace(/\/$/, '');
+  }, [providedBaseUrl]);
+  const displayPosts = useMemo(() => 
+    limit ? posts.slice(0, limit) : posts,
+    [posts, limit]
+  );
   
   if (!displayPosts || displayPosts.length === 0) {
     return <div className="no-posts">{template.text.noPostsFound}</div>;
@@ -45,9 +27,41 @@ const PostList = ({ posts, template, limit }: PostListProps) => {
   
   return (
     <div className="post-list">
-      {renderedItems.map((html, index) => (
-        <div key={displayPosts[index]?.slug || `post-${index}`} dangerouslySetInnerHTML={{ __html: html }} />
-      ))}
+      {displayPosts.map(post => {
+        const formattedDate = formatDate(
+          new Date(post.frontmatter.date), 
+          template.layout.home.dateFormat
+        );
+        
+        return (
+          <article key={post.slug} className="post-preview">
+            <h2>
+              <a href={`${baseUrl}/post/${post.slug}`}>
+                {post.frontmatter.title}
+                {post.frontmatter.draft && template.layout.postList.showDraftIndicator && (
+                  <span className="draft-indicator"> {template.layout.postList.draftIndicatorText}</span>
+                )}
+              </a>
+            </h2>
+            
+            <div className="post-meta">
+              <span className="post-date">{formattedDate}</span>
+              
+              {template.layout.postList.showAuthor && post.frontmatter.author && (
+                <span className="post-author"> by {post.frontmatter.author}</span>
+              )}
+            </div>
+            
+            {template.layout.postList.showExcerpt && post.frontmatter.excerpt && (
+              <p className="post-excerpt">{post.frontmatter.excerpt}</p>
+            )}
+            
+            <a href={`${baseUrl}/post/${post.slug}`} className="read-more">
+              {template.layout.postList.readMoreText}
+            </a>
+          </article>
+        );
+      })}
     </div>
   );
 };
