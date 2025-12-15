@@ -1,0 +1,66 @@
+<svg
+    width="256"
+    height="256"
+    viewBox="0 0 256 256"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-labelledby="title desc"
+>
+  <title id="title">scriptae logo</title>
+  <desc id="desc">Stylised S in a speech bubble representing micro blogging</desc>
+
+  <!-- Background (transparent by default) -->
+  <rect x="0" y="0" width="256" height="256" fill="none"/>
+
+  <!-- Speech bubble container -->
+  <path
+    d="M64 40
+       H192
+       C210 40 224 54 224 72
+       V152
+       C224 170 210 184 192 184
+       H120
+       L92 216
+       C88 220 80 218 80 212
+       V184
+       H64
+       C46 184 32 170 32 152
+       V72
+       C32 54 46 40 64 40
+       Z"
+    fill="#111827"
+  />
+
+  <!-- Stylised S (script / stream of posts) -->
+  <path
+    d="M156 72
+       C134 72 122 84 122 96
+       C122 106 129 112 142 116
+       L152 119
+       C170 124 182 135 182 153
+       C182 175 163 192 136 192
+       C113 192 96 182 90 166
+       L108 159
+       C112 170 122 176 136 176
+       C149 176 164 170 164 154
+       C164 145 158 138 144 134
+       L134 131
+       C115 126 102 115 102 96
+       C102 74 121 56 148 56
+       C169 56 184 66 191 82
+       L173 89
+       C168 79 160 72 156 72
+       Z"
+    fill="#F9FAFB"
+  />
+
+  <!-- Accent pen nib / cursor hint -->
+  <path
+    d="M82 144
+       L96 132
+       L112 148
+       L98 160
+       Z"
+    fill="#3B82F6"
+  />
+</svg>
