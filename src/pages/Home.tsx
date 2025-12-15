@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { getAllPosts, fetchFromGitHub, Post } from '../utils/posts';
-import { loadTemplate, applyTheme, replaceTemplateVars, TemplateConfig } from '../utils/template';
+import { loadTemplate, replaceTemplateVars, TemplateConfig, getThemePreference } from '../utils/template';
 import PostList from '../components/PostList';
 import './Home.css';
 import '../components/PostList.css';
@@ -19,10 +19,9 @@ const Home = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        // Load template first
-        const templateConfig = await loadTemplate();
+        // Load template first (use current theme preference)
+        const templateConfig = await loadTemplate(getThemePreference());
         setTemplate(templateConfig);
-        applyTheme(templateConfig);
 
         // Set default posts to show from template
         setPostsToShow(templateConfig.layout.home.defaultPostsToShow);

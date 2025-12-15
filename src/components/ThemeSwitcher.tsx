@@ -16,14 +16,18 @@ const ThemeSwitcher = ({ onThemeChange }: ThemeSwitcherProps) => {
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
+    
+    // Update state first
     setTheme(newTheme);
+    
+    // Set the data-theme attribute immediately for CSS
+    document.documentElement.setAttribute('data-theme', newTheme);
+    
+    // Save preference
     setThemePreference(newTheme);
     
-    // Use requestAnimationFrame for smooth visual update
-    requestAnimationFrame(() => {
-      document.documentElement.setAttribute('data-theme', newTheme);
-      onThemeChange(newTheme);
-    });
+    // Notify parent to reload template colors
+    onThemeChange(newTheme);
   };
 
   return (

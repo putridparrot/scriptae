@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getPostBySlug, Post as PostType } from '../utils/posts';
-import { loadTemplate, applyTheme, formatDate, TemplateConfig } from '../utils/template';
+import { loadTemplate, formatDate, TemplateConfig, getThemePreference } from '../utils/template';
 import { renderHTMLTemplate } from '../utils/templateEngine';
 import CodeBlock from './CodeBlock';
 import './Post.css';
@@ -30,9 +30,8 @@ const Post = () => {
       
       try {
         // Load template first
-        const templateConfig = await loadTemplate();
+        const templateConfig = await loadTemplate(getThemePreference());
         setTemplate(templateConfig);
-        applyTheme(templateConfig);
         
         // Load post
         const postData = await getPostBySlug(slug);

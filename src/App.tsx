@@ -1,14 +1,24 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import { loadTemplate, applyTheme } from './utils/template';
+import { loadTemplate, applyTheme, getThemePreference } from './utils/template';
 import './App.css';
 
 // Lazy load Post component for code splitting
 const Post = lazy(() => import('./components/Post'));
 
 function App() {
+  // Apply theme on initial load
+  useEffect(() => {
+    const initTheme = async () => {
+      const theme = getThemePreference();
+      const templateConfig = await loadTemplate(theme);
+      applyTheme(templateConfig);
+    };
+    initTheme();
+  }, []);
+
   const handleThemeChange = async (theme: 'light' | 'dark') => {
     // Load template with new theme and apply colors
     const templateConfig = await loadTemplate(theme);

@@ -102,7 +102,9 @@ export function getThemePreference(): 'light' | 'dark' {
  */
 export function setThemePreference(theme: 'light' | 'dark'): void {
   localStorage.setItem('theme', theme);
-  currentTheme = theme;
+  // Don't update currentTheme here - let loadTemplate handle it
+  // Clear cache to force reload with new theme
+  cachedTemplate = null;
 }
 
 /**
