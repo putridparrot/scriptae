@@ -34,7 +34,10 @@ const Home = () => {
       const hasOlderPosts = endIndex < posts.length;
 
       // Render post list items
-      const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
+      // Normalize base URL: remove trailing slash, ensure we don't create double slashes
+      let baseUrl = import.meta.env.BASE_URL || '/';
+      baseUrl = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
+      
       const postListItems = await Promise.all(
         displayPosts.map(post =>
           renderHTMLTemplate('post-list-item', {
