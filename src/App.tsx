@@ -39,15 +39,17 @@ function App() {
   };
 
   return (
-    <Router basename={import.meta.env.BASE_URL}>
+    <main>    
+      <Router basename={import.meta.env.BASE_URL}>
       <ThemeSwitcher onThemeChange={handleThemeChange} />
-      <Suspense fallback={<div className="loading">Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/post/:slug" element={<Post />} />
-        </Routes>
-      </Suspense>
-    </Router>
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/post/:slug" element={<Post />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </main>
   );
 }
 

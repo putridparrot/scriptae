@@ -60,26 +60,6 @@ const PostList = ({ posts, template, limit, useVirtualScrolling = false }: PostL
     );
   };
 
-  // Use virtual scrolling for large lists
-  if (useVirtualScrolling && displayPosts.length > 20) {
-    return (
-      <List
-        defaultHeight={600}
-        rowCount={displayPosts.length}
-        rowHeight={ITEM_HEIGHT}
-        rowProps={{}}
-        rowComponent={({ index, style }) => {
-          const post = displayPosts[index];
-          return (
-            <div style={style}>
-              {post ? renderPostItem(post) : <div>Loading...</div>}
-            </div>
-          );
-        }}
-      />
-    );
-  }
-  
   return (
     <div className="post-list">
       {displayPosts.map(post => renderPostItem(post))}
