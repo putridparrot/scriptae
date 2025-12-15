@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import PostList from '../components/PostList';
 import { getAllPosts, Post } from '../utils/posts';
 import { loadTemplate, applyTheme, replaceTemplateVars, TemplateConfig } from '../utils/template';
 import { renderHTMLTemplate } from '../utils/templateEngine';

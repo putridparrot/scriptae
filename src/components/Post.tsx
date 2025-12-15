@@ -50,6 +50,9 @@ const Post = () => {
           
           // Render HTML template
           const html = await renderHTMLTemplate('post', {
+            // Include site data for nested templates first
+            ...templateConfig.site,
+            // Post-specific data (overwrites any conflicting site properties)
             title: postData.frontmatter.title,
             author: postData.frontmatter.author,
             date: formatDate(new Date(postData.frontmatter.date), templateConfig.layout.post.dateFormat),
@@ -58,9 +61,7 @@ const Post = () => {
             showBackButton: templateConfig.layout.post.showBackButton,
             showDate: templateConfig.layout.post.showDate,
             showAuthor: templateConfig.layout.post.showAuthor,
-            backButtonText: templateConfig.layout.post.backButtonText,
-            // Include site data for nested templates
-            ...templateConfig.site
+            backButtonText: templateConfig.layout.post.backButtonText
           });
           
           setRenderedHTML(html);

@@ -20,6 +20,7 @@ async function processIncludes(template: string, data: Record<string, any>): Pro
   // Process all includes
   for (const match of matches) {
     const templateName = match[1];
+    if (!templateName) continue;
     try {
       const includedTemplate = await loadHTMLTemplate(templateName);
       // Recursively render the included template with the same data
@@ -39,17 +40,26 @@ async function processIncludes(template: string, data: Record<string, any>): Pro
  * Load an HTML template from the public/templates folder
  */
 export async function loadHTMLTemplate(templateName: string): Promise<string> {
-  if (templateCache[templateName]) {
+  // In development mode, skip cache to allow hot reloading
+  const useCache = import.meta.env.PROD;
+  
+  if (useCache && templateCache[templateName]) {
     return templateCache[templateName];
   }
 
   try {
-    const response = await fetch(`/templates/${templateName}.html`);
+    // Add a cache-busting query parameter in development
+    const cacheBuster = useCache ? '' : `?t=${Date.now()}`;
+    const response = await fetch(`/templates/${templateName}.html${cacheBuster}`);
     if (!response.ok) {
       throw new Error(`Failed to load template: ${templateName}`);
     }
     const template = await response.text();
-    templateCache[templateName] = template;
+    
+    if (useCache) {
+      templateCache[templateName] = template;
+    }
+    
     return template;
   } catch (error) {
     console.error(`Error loading template ${templateName}:`, error);

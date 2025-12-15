@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Buffer } from 'buffer'
 import './index.css'
 import App from './App'
+import './utils/templateHMR'
 
 window.Buffer = Buffer
 
