@@ -100,9 +100,12 @@ const Home = () => {
 
   return (
     <div className="home">
-      <header>
+      <header className="blog-header">
         <h1>{template.site.title}</h1>
         <p className="blog-description">{template.site.description}</p>
+        {template.site.tagline && (
+          <p className="blog-tagline">{template.site.tagline}</p>
+        )}
       </header>
 
       {template.layout.home.showControls && (
