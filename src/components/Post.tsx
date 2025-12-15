@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { getPostBySlug, Post as PostType } from '../utils/posts';
 import { loadTemplate, applyTheme, formatDate, TemplateConfig } from '../utils/template';
 import { renderHTMLTemplate } from '../utils/templateEngine';
+import CodeBlock from './CodeBlock';
 import './Post.css';
 
 const Post = () => {
@@ -43,7 +44,12 @@ const Post = () => {
           
           // Render markdown content to HTML string
           const contentHTML = renderToString(
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                code: CodeBlock as any,
+              }}
+            >
               {postData.content}
             </ReactMarkdown>
           );

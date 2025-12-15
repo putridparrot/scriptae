@@ -98,14 +98,6 @@
   font-size: 0.9em;
 }
 
-.post-content pre {
-  background-color: #f5f5f5;
-  padding: 15px;
-  border-radius: 5px;
-  overflow-x: auto;
-  margin: 20px 0;
-}
-
 .post-content pre code {
   background-color: transparent;
   padding: 0;

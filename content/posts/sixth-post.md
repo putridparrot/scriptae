@@ -18,7 +18,7 @@ Building a good REST API requires careful planning and adherence to best practic
 
 ## 2. Use Meaningful Resource Names
 
-```
+```python{2}
 /users
 /users/{id}
 /users/{id}/posts
