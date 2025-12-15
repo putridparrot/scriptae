@@ -8,15 +8,9 @@ interface PostListProps {
   posts: Post[];
   template: TemplateConfig;
   limit?: number;
-  baseUrl?: string;
 }
 
-const PostList = ({ posts, template, limit, baseUrl: providedBaseUrl }: PostListProps) => {
-  // Normalize base URL: remove trailing slash, ensure we don't create double slashes
-  const baseUrl = useMemo(() => {
-    const base = providedBaseUrl ?? (import.meta.env.BASE_URL || '/');
-    return base === '/' ? '' : base.replace(/\/$/, '');
-  }, [providedBaseUrl]);
+const PostList = ({ posts, template, limit }: PostListProps) => {
   const displayPosts = useMemo(() => 
     limit ? posts.slice(0, limit) : posts,
     [posts, limit]
