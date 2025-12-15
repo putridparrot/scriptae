@@ -49,8 +49,10 @@ export async function loadHTMLTemplate(templateName: string): Promise<string> {
 
   try {
     // Add a cache-busting query parameter in development
+    // Use BASE_URL to handle subdirectory deployments
     const cacheBuster = useCache ? '' : `?t=${Date.now()}`;
-    const response = await fetch(`/templates/${templateName}.html${cacheBuster}`);
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    const response = await fetch(`${baseUrl}templates/${templateName}.html${cacheBuster}`);
     if (!response.ok) {
       throw new Error(`Failed to load template: ${templateName}`);
     }

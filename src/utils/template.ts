@@ -144,15 +144,18 @@ export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateCo
   }
 
   try {
+    // Use BASE_URL to handle subdirectory deployments
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    
     // Load base template
-    const baseResponse = await fetch('/templates/template.json');
+    const baseResponse = await fetch(`${baseUrl}templates/template.json`);
     if (!baseResponse.ok) {
       throw new Error('Failed to load base template');
     }
     const baseTemplate = await baseResponse.json();
     
     // Load theme-specific overrides
-    const themeResponse = await fetch(`/templates/template-${selectedTheme}.json`);
+    const themeResponse = await fetch(`${baseUrl}templates/template-${selectedTheme}.json`);
     if (!themeResponse.ok) {
       // If theme-specific template doesn't exist, just use the base template
       console.log(`No theme-specific template found for ${selectedTheme}, using base template`);
