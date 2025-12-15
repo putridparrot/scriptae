@@ -78,6 +78,8 @@ export interface TemplateConfig {
 }
 
 let cachedTemplate: TemplateConfig | null = null;
+let cachedBaseTemplate: any = null;
+let cachedThemeTemplates: Record<string, any> = {};
 let currentTheme: 'light' | 'dark' = 'light';
 
 /**
@@ -102,8 +104,7 @@ export function getThemePreference(): 'light' | 'dark' {
  */
 export function setThemePreference(theme: 'light' | 'dark'): void {
   localStorage.setItem('theme', theme);
-  // Don't update currentTheme here - let loadTemplate handle it
-  // Clear cache to force reload with new theme
+  // Clear merged template cache to force re-merge with new theme
   cachedTemplate = null;
 }
 
@@ -135,12 +136,7 @@ function deepMerge<T>(base: T, override: Partial<T>): T {
 export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateConfig> {
   const selectedTheme = theme || getThemePreference();
   
-  // Clear cache if theme changed
-  if (theme && theme !== currentTheme) {
-    cachedTemplate = null;
-    currentTheme = theme;
-  }
-  
+  // Return cached if theme hasn't changed
   if (cachedTemplate && currentTheme === selectedTheme) {
     return cachedTemplate;
   }
@@ -150,30 +146,33 @@ export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateCo
     const baseUrl = import.meta.env.BASE_URL || '/';
     const useCache = import.meta.env.PROD;
     
-    // Load base template
-    const baseResponse = await fetch(`${baseUrl}templates/template.json`, {
-      cache: useCache ? 'force-cache' : 'no-store'
-    });
-    if (!baseResponse.ok) {
-      throw new Error('Failed to load base template');
+    // Load base template (only if not already cached)
+    if (!cachedBaseTemplate) {
+      const baseResponse = await fetch(`${baseUrl}templates/template.json`, {
+        cache: useCache ? 'force-cache' : 'no-store'
+      });
+      if (!baseResponse.ok) {
+        throw new Error('Failed to load base template');
+      }
+      cachedBaseTemplate = await baseResponse.json();
     }
-    const baseTemplate = await baseResponse.json();
     
-    // Load theme-specific overrides
-    const themeResponse = await fetch(`${baseUrl}templates/template-${selectedTheme}.json`, {
-      cache: useCache ? 'force-cache' : 'no-store'
-    });
-    if (!themeResponse.ok) {
-      // If theme-specific template doesn't exist, just use the base template
-      console.log(`No theme-specific template found for ${selectedTheme}, using base template`);
-      cachedTemplate = baseTemplate as TemplateConfig;
-      currentTheme = selectedTheme;
-      return cachedTemplate;
+    // Load theme-specific overrides (only if not already cached)
+    if (!cachedThemeTemplates[selectedTheme]) {
+      const themeResponse = await fetch(`${baseUrl}templates/template-${selectedTheme}.json`, {
+        cache: useCache ? 'force-cache' : 'no-store'
+      });
+      if (!themeResponse.ok) {
+        // If theme-specific template doesn't exist, use empty overrides
+        console.log(`No theme-specific template found for ${selectedTheme}, using base template`);
+        cachedThemeTemplates[selectedTheme] = {};
+      } else {
+        cachedThemeTemplates[selectedTheme] = await themeResponse.json();
+      }
     }
-    const themeOverrides = await themeResponse.json();
     
     // Merge base with theme overrides
-    cachedTemplate = deepMerge(baseTemplate, themeOverrides);
+    cachedTemplate = deepMerge(cachedBaseTemplate, cachedThemeTemplates[selectedTheme]);
     currentTheme = selectedTheme;
     return cachedTemplate as TemplateConfig;
   } catch (error) {
