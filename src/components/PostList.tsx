@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { List } from 'react-window';
 import { PostMetadata } from '../utils/posts';
 import { TemplateConfig, formatDate } from '../utils/template';
 import './PostList.css';
@@ -12,9 +11,7 @@ interface PostListProps {
   useVirtualScrolling?: boolean;
 }
 
-const ITEM_HEIGHT = 180; // Approximate height of each post preview in pixels
-
-const PostList = ({ posts, template, limit, useVirtualScrolling = false }: PostListProps) => {
+const PostList = ({ posts, template, limit }: PostListProps) => {
   const displayPosts = useMemo(() => 
     limit ? posts.slice(0, limit) : posts,
     [posts, limit]
