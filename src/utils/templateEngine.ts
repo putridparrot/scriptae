@@ -40,7 +40,7 @@ async function processIncludes(template: string, data: Record<string, any>): Pro
  * Load an HTML template from the public/templates folder
  */
 export async function loadHTMLTemplate(templateName: string): Promise<string> {
-  // In development mode, skip cache to allow hot reloading
+  // Always use cache in production, disable in dev for hot reloading
   const useCache = import.meta.env.PROD;
   
   if (useCache && templateCache[templateName]) {
@@ -48,11 +48,12 @@ export async function loadHTMLTemplate(templateName: string): Promise<string> {
   }
 
   try {
-    // Add a cache-busting query parameter in development
     // Use BASE_URL to handle subdirectory deployments
-    const cacheBuster = useCache ? '' : `?t=${Date.now()}`;
     const baseUrl = import.meta.env.BASE_URL || '/';
-    const response = await fetch(`${baseUrl}templates/${templateName}.html${cacheBuster}`);
+    const cacheBuster = useCache ? '' : `?t=${Date.now()}`;
+    const response = await fetch(`${baseUrl}templates/${templateName}.html${cacheBuster}`, {
+      cache: useCache ? 'force-cache' : 'no-store'
+    });
     if (!response.ok) {
       throw new Error(`Failed to load template: ${templateName}`);
     }
