@@ -27,13 +27,6 @@ const Home = () => {
         total: posts.length
       });
 
-      // Render header HTML
-      const headerHTML = await renderHTMLTemplate('header', {
-        title: template.site.title,
-        description: template.site.description,
-        tagline: template.site.tagline
-      });
-
       // Render post list items
       const postListItems = await Promise.all(
         displayPosts.map(post =>
@@ -57,7 +50,6 @@ const Home = () => {
 
       // Render home page HTML
       const html = await renderHTMLTemplate('home', {
-        headerHTML,
         showControls: template.layout.home.showControls,
         showPostCount: template.layout.home.showPostCount,
         showingPostsText,
@@ -69,7 +61,9 @@ const Home = () => {
         showShowLessButton: showAll,
         showLessButton: template.text.showLessButton,
         postListHTML,
-        footer: template.site.footer
+        footer: template.site.footer,
+        // Include site data for nested templates
+        ...template.site
       });
 
       setRenderedHTML(html);

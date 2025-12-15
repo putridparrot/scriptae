@@ -56,6 +56,28 @@ You can nest conditionals:
 {{/if}}
 ```
 
+### Template Includes (Partials)
+
+Use `{{>templateName}}` to embed other templates:
+
+```html
+<article class="post">
+  {{>header}}
+  
+  <div class="post-content">
+    {{content}}
+  </div>
+</article>
+```
+
+This will automatically load and render the `header.html` template at that location. The included template has access to the same data as the parent template, making it easy to reuse components across different pages **without modifying any code**.
+
+**Benefits:**
+- Reuse common elements (headers, footers, navigation) across templates
+- No code changes needed - just edit the HTML templates
+- Nested includes are supported (templates can include other templates)
+- Changes take effect immediately on page refresh
+
 ## Available Variables
 
 ### post.html

@@ -58,7 +58,9 @@ const Post = () => {
             showBackButton: templateConfig.layout.post.showBackButton,
             showDate: templateConfig.layout.post.showDate,
             showAuthor: templateConfig.layout.post.showAuthor,
-            backButtonText: templateConfig.layout.post.backButtonText
+            backButtonText: templateConfig.layout.post.backButtonText,
+            // Include site data for nested templates
+            ...templateConfig.site
           });
           
           setRenderedHTML(html);

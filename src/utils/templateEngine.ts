@@ -9,6 +9,33 @@ interface TemplateCache {
 const templateCache: TemplateCache = {};
 
 /**
+ * Process template includes/partials
+ * Handles {{>templateName}} syntax to embed other templates
+ */
+async function processIncludes(template: string, data: Record<string, any>): Promise<string> {
+  const includeRegex = /\{\{>(\w+)\}\}/g;
+  let result = template;
+  const matches = [...template.matchAll(includeRegex)];
+  
+  // Process all includes
+  for (const match of matches) {
+    const templateName = match[1];
+    try {
+      const includedTemplate = await loadHTMLTemplate(templateName);
+      // Recursively render the included template with the same data
+      const rendered = await renderTemplate(includedTemplate, data);
+      result = result.replace(match[0], rendered);
+    } catch (error) {
+      console.error(`Error loading included template ${templateName}:`, error);
+      // Replace with empty string if template not found
+      result = result.replace(match[0], '');
+    }
+  }
+  
+  return result;
+}
+
+/**
  * Load an HTML template from the public/templates folder
  */
 export async function loadHTMLTemplate(templateName: string): Promise<string> {
@@ -35,11 +62,15 @@ export async function loadHTMLTemplate(templateName: string): Promise<string> {
  * Supports:
  * - {{variable}} for simple substitution
  * - {{#if condition}}...{{/if}} for conditionals
+ * - {{>templateName}} for template includes/partials
  */
-export function renderTemplate(template: string, data: Record<string, any>): string {
+export async function renderTemplate(template: string, data: Record<string, any>): Promise<string> {
   let result = template;
 
-  // Process conditionals first: {{#if variable}}...{{/if}}
+  // Process template includes first: {{>templateName}}
+  result = await processIncludes(result, data);
+
+  // Process conditionals: {{#if variable}}...{{/if}}
   result = processConditionals(result, data);
 
   // Then process simple variable substitutions: {{variable}}
@@ -125,7 +156,7 @@ function processConditionals(template: string, data: Record<string, any>): strin
   return result;
 }
 
-/**
+/**await 
  * Process variable substitutions in the template
  */
 function processVariables(template: string, data: Record<string, any>): string {
