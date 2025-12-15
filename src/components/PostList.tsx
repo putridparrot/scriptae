@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Post } from '../utils/posts';
 import { TemplateConfig, formatDate } from '../utils/template';
 import './PostList.css';
@@ -36,12 +37,12 @@ const PostList = ({ posts, template, limit, baseUrl: providedBaseUrl }: PostList
         return (
           <article key={post.slug} className="post-preview">
             <h2>
-              <a href={`${baseUrl}/post/${post.slug}`}>
+              <Link to={`/post/${post.slug}`}>
                 {post.frontmatter.title}
                 {post.frontmatter.draft && template.layout.postList.showDraftIndicator && (
                   <span className="draft-indicator"> {template.layout.postList.draftIndicatorText}</span>
                 )}
-              </a>
+              </Link>
             </h2>
             
             <div className="post-meta">
@@ -56,9 +57,9 @@ const PostList = ({ posts, template, limit, baseUrl: providedBaseUrl }: PostList
               <p className="post-excerpt">{post.frontmatter.excerpt}</p>
             )}
             
-            <a href={`${baseUrl}/post/${post.slug}`} className="read-more">
+            <Link to={`/post/${post.slug}`} className="read-more">
               {template.layout.postList.readMoreText}
-            </a>
+            </Link>
           </article>
         );
       })}
