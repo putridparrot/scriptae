@@ -34,9 +34,11 @@ const Home = () => {
       const hasOlderPosts = endIndex < posts.length;
 
       // Render post list items
+      const baseUrl = import.meta.env.BASE_URL;
       const postListItems = await Promise.all(
         displayPosts.map(post =>
           renderHTMLTemplate('post-list-item', {
+            baseUrl,
             title: post.frontmatter.title,
             slug: post.slug,
             author: post.frontmatter.author,
