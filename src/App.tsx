@@ -2,20 +2,15 @@ import { useState, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import { loadTemplate, applyTheme } from './utils/template';
 import './App.css';
 
 // Lazy load Post component for code splitting
 const Post = lazy(() => import('./components/Post'));
 
 function App() {
-  const [, setThemeVersion] = useState(0);
-
-  const handleThemeChange = async (theme: 'light' | 'dark') => {
-    const templateConfig = await loadTemplate(theme);
-    applyTheme(templateConfig);
-    setThemeVersion(v => v + 1); // Force re-render
-    window.location.reload(); // Reload to apply new template
+  const handleThemeChange = () => {
+    // Theme switching is now handled purely via CSS data-theme attribute
+    // No need to reload template or force re-render
   };
 
   return (

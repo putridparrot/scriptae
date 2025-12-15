@@ -18,8 +18,12 @@ const ThemeSwitcher = ({ onThemeChange }: ThemeSwitcherProps) => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     setThemePreference(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    onThemeChange(newTheme);
+    
+    // Use requestAnimationFrame for smooth visual update
+    requestAnimationFrame(() => {
+      document.documentElement.setAttribute('data-theme', newTheme);
+      onThemeChange(newTheme);
+    });
   };
 
   return (
