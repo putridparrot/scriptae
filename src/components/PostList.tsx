@@ -46,7 +46,7 @@ const PostList = ({ posts, template, limit }: PostListProps) => {
   return (
     <div className="post-list">
       {renderedItems.map((html, index) => (
-        <div key={displayPosts[index].slug} dangerouslySetInnerHTML={{ __html: html }} />
+        <div key={displayPosts[index]?.slug || `post-${index}`} dangerouslySetInnerHTML={{ __html: html }} />
       ))}
     </div>
   );
