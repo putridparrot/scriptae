@@ -114,7 +114,7 @@ function processConditionals(template: string, data: Record<string, any>): strin
     const content = result.substring(contentStart, endPos);
     const fullMatch = result.substring(startPos, endPos + '{{/if}}'.length);
     
-    const value = data[condition];
+    const value = condition ? data[condition] : undefined;
     
     // Check if condition is truthy (excluding empty strings)
     const shouldShow = value && value !== false && value !== 'false' && value !== 0 && value !== '';
