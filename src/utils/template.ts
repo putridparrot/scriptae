@@ -67,21 +67,56 @@ export interface TemplateConfig {
 }
 
 let cachedTemplate: TemplateConfig | null = null;
+let currentTheme: 'light' | 'dark' = 'light';
+
+/**
+ * Get the current theme preference from localStorage or system preference
+ */
+export function getThemePreference(): 'light' | 'dark' {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'light' || stored === 'dark') {
+    return stored;
+  }
+  
+  // Check system preference
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  
+  return 'light';
+}
+
+/**
+ * Set the theme preference
+ */
+export function setThemePreference(theme: 'light' | 'dark'): void {
+  localStorage.setItem('theme', theme);
+  currentTheme = theme;
+}
 
 /**
  * Load the template configuration from the public folder
  */
-export async function loadTemplate(): Promise<TemplateConfig> {
-  if (cachedTemplate) {
+export async function loadTemplate(theme?: 'light' | 'dark'): Promise<TemplateConfig> {
+  const selectedTheme = theme || getThemePreference();
+  
+  // Clear cache if theme changed
+  if (theme && theme !== currentTheme) {
+    cachedTemplate = null;
+    currentTheme = theme;
+  }
+  
+  if (cachedTemplate && currentTheme === selectedTheme) {
     return cachedTemplate;
   }
 
   try {
-    const response = await fetch('/template.json');
+    const response = await fetch(`/templates/template-${selectedTheme}.json`);
     if (!response.ok) {
       throw new Error('Failed to load template');
     }
     cachedTemplate = await response.json();
+    currentTheme = selectedTheme;
     return cachedTemplate as TemplateConfig;
   } catch (error) {
     console.error('Error loading template:', error);

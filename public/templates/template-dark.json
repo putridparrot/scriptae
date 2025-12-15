@@ -7,21 +7,21 @@
   },
   "theme": {
     "colors": {
-      "primary": "#667eea",
-      "secondary": "#764ba2",
-      "accent": "#3498db",
-      "accentHover": "#2980b9",
-      "text": "#2c3e50",
-      "textLight": "#7f8c8d",
-      "background": "#ffffff",
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "accent": "#4a9eff",
+      "accentHover": "#3d8ae6",
+      "text": "#e4e4e4",
+      "textLight": "#a0a0a0",
+      "background": "#0f0f0f",
       "headerText": "#ffffff",
-      "border": "#ddd",
-      "draft": "#e74c3c"
+      "border": "#333",
+      "draft": "#ff6b6b"
     },
     "fonts": {
-      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-      "headings": "inherit",
-      "code": "'Courier New', Courier, monospace"
+      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "headings": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "code": "Consolas, Monaco, 'Courier New', monospace"
     },
     "spacing": {
       "headerPadding": "60px 20px 40px",
@@ -29,7 +29,7 @@
       "postSpacing": "40px"
     },
     "borderRadius": "4px",
-    "headerGradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    "headerGradient": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
   },
   "layout": {
     "home": {

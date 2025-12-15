@@ -16,10 +16,8 @@
 
 .post-preview h2 {
   margin: 0 0 10px 0;
-  font-size: 1.8em;
-}
-
-.post-preview h2 {
+  font-size: 1.5em;
+  font-weight: 700;
   font-family: var(--font-headings);
 }
 
@@ -55,6 +53,7 @@
   color: #555;
   line-height: 1.6;
   margin: 15px 0;
+  font-size: 1em;
 }
 
 .read-more {
