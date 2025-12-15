@@ -236,6 +236,15 @@ function getDefaultTemplate(): TemplateConfig {
       tagline: "",
       footer: ""
     },
+    content: {
+      source: "local",
+      github: {
+        owner: "your-username",
+        repo: "your-repo",
+        postsPath: "content/posts",
+        draftsPath: "content/drafts"
+      }
+    },
     theme: {
       colors: {
         primary: "#667eea",
