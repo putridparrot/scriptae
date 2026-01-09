@@ -14,6 +14,7 @@ export interface TemplateConfig {
       repo: string;
       postsPath: string;
       draftsPath?: string;
+      cacheBusting?: boolean;
     };
   };
   theme: {
