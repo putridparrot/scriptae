@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // Use VITE_BASE_PATH env var, or default to '/scriptae/' for GitHub Pages, '/' for local
-  base: process.env.VITE_BASE_PATH || (process.env.NODE_ENV === 'production' ? '/scriptae/' : '/'),
+  base: '/', // process.env.VITE_BASE_PATH || (process.env.NODE_ENV === 'production' ? '/scriptae/' : '/'),
   define: {
     global: 'globalThis',
   },
