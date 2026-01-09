@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+import { loadTemplate, getThemePreference } from './template';
 
 export interface PostFrontmatter {
   title: string;
@@ -103,44 +104,92 @@ export const getAllPosts = async (): Promise<Post[]> => {
 
 // Function to get post content by slug (lazy loaded)
 export const getPostContent = async (slug: string): Promise<string> => {
-  const postPath = `/content/posts/${slug}.md`;
-  const draftPath = `/content/drafts/${slug}.md`;
-  
-  // Try posts first
-  if (postContentLoaders[postPath]) {
-    const content = await postContentLoaders[postPath]() as string;
-    const { content: markdown } = matter(content);
-    return markdown;
+  const templateConfig = await loadTemplate(getThemePreference());
+  if (templateConfig.content.source === 'github' && templateConfig.content.github) {
+    const { owner, repo, postsPath, draftsPath } = templateConfig.content.github;
+    // Try posts first
+    const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md`;
+    let response = await fetch(postUrl, { cache: 'no-store' });
+    if (response.ok) {
+      const content = await response.text();
+      const { content: markdown } = matter(content);
+      return markdown;
+    }
+    // Try drafts if not found in posts
+    if (draftsPath) {
+      const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md`;
+      response = await fetch(draftUrl, { cache: 'no-store' });
+      if (response.ok) {
+        const content = await response.text();
+        const { content: markdown } = matter(content);
+        return markdown;
+      }
+    }
+    throw new Error(`Post not found on GitHub: ${slug}`);
+  } else {
+    // Local fallback
+    const postPath = `/content/posts/${slug}.md`;
+    const draftPath = `/content/drafts/${slug}.md`;
+    if (postContentLoaders[postPath]) {
+      const content = await postContentLoaders[postPath]() as string;
+      const { content: markdown } = matter(content);
+      return markdown;
+    }
+    if (draftContentLoaders[draftPath]) {
+      const content = await draftContentLoaders[draftPath]() as string;
+      const { content: markdown } = matter(content);
+      return markdown;
+    }
+    throw new Error(`Post not found: ${slug}`);
   }
-  
-  // Try drafts
-  if (draftContentLoaders[draftPath]) {
-    const content = await draftContentLoaders[draftPath]() as string;
-    const { content: markdown } = matter(content);
-    return markdown;
-  }
-  
-  throw new Error(`Post not found: ${slug}`);
 };
 
 // Function to get a single post by slug with full content
 export const getPostBySlug = async (slug: string): Promise<Post | null> => {
   try {
-    // Get metadata for this slug
-    const allMetadata = [...await getAllPostsMetadata(), ...await getAllDraftsMetadata()];
-    const metadata = allMetadata.find(m => m.slug === slug);
-    
-    if (!metadata) {
+    const templateConfig = await loadTemplate(getThemePreference());
+    if (templateConfig.content.source === 'github' && templateConfig.content.github) {
+      const { owner, repo, postsPath, draftsPath } = templateConfig.content.github;
+      // Try posts first
+      const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md`;
+      let response = await fetch(postUrl, { cache: 'no-store' });
+      if (response.ok) {
+        const contentRaw = await response.text();
+        const { data, content } = matter(contentRaw);
+        return {
+          slug,
+          frontmatter: data as PostFrontmatter,
+          content
+        };
+      }
+      // Try drafts if not found in posts
+      if (draftsPath) {
+        const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md`;
+        response = await fetch(draftUrl, { cache: 'no-store' });
+        if (response.ok) {
+          const contentRaw = await response.text();
+          const { data, content } = matter(contentRaw);
+          return {
+            slug,
+            frontmatter: { ...data, draft: true } as PostFrontmatter,
+            content
+          };
+        }
+      }
       return null;
+    } else {
+      // Local fallback
+      const allMetadata = [...await getAllPostsMetadata(), ...await getAllDraftsMetadata()];
+      const metadata = allMetadata.find(m => m.slug === slug);
+      if (!metadata) {
+        return null;
+      }
+      const content = await getPostContent(slug);
+      return {
+        ...metadata,
+        content
+      };
     }
-    
-    // Load content lazily
-    const content = await getPostContent(slug);
-    
-    return {
-      ...metadata,
-      content
-    };
   } catch (error) {
     console.error('Error loading post:', error);
     return null;

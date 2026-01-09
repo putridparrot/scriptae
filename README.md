@@ -2,6 +2,10 @@
 
 A blog engine which generates from your .MD files
 
+## Sample
+
+https://putridparrot.github.io/scriptae/
+
 ## Features
 
 - 📝 Markdown-based blog posts with frontmatter support
