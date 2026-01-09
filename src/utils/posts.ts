@@ -105,10 +105,12 @@ export const getAllPosts = async (): Promise<Post[]> => {
 // Function to get post content by slug (lazy loaded)
 export const getPostContent = async (slug: string): Promise<string> => {
   const templateConfig = await loadTemplate(getThemePreference());
+  const cacheBusting = templateConfig.content.github?.cacheBusting;
+  const cacheBuster = cacheBusting ? `t=${Date.now()}` : undefined;
   if (templateConfig.content.source === 'github' && templateConfig.content.github) {
     const { owner, repo, postsPath, draftsPath } = templateConfig.content.github;
     // Try posts first
-    const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md`;
+    const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md` + (cacheBuster ? `?${cacheBuster}` : '');
     let response = await fetch(postUrl, { cache: 'no-store' });
     if (response.ok) {
       const content = await response.text();
@@ -117,7 +119,7 @@ export const getPostContent = async (slug: string): Promise<string> => {
     }
     // Try drafts if not found in posts
     if (draftsPath) {
-      const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md`;
+      const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md` + (cacheBuster ? `?${cacheBuster}` : '');
       response = await fetch(draftUrl, { cache: 'no-store' });
       if (response.ok) {
         const content = await response.text();
@@ -148,10 +150,12 @@ export const getPostContent = async (slug: string): Promise<string> => {
 export const getPostBySlug = async (slug: string): Promise<Post | null> => {
   try {
     const templateConfig = await loadTemplate(getThemePreference());
+    const cacheBusting = templateConfig.content.github?.cacheBusting;
+    const cacheBuster = cacheBusting ? `t=${Date.now()}` : undefined;
     if (templateConfig.content.source === 'github' && templateConfig.content.github) {
       const { owner, repo, postsPath, draftsPath } = templateConfig.content.github;
       // Try posts first
-      const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md`;
+      const postUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${postsPath}/${slug}.md` + (cacheBuster ? `?${cacheBuster}` : '');
       let response = await fetch(postUrl, { cache: 'no-store' });
       if (response.ok) {
         const contentRaw = await response.text();
@@ -164,7 +168,7 @@ export const getPostBySlug = async (slug: string): Promise<Post | null> => {
       }
       // Try drafts if not found in posts
       if (draftsPath) {
-        const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md`;
+        const draftUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${draftsPath}/${slug}.md` + (cacheBuster ? `?${cacheBuster}` : '');
         response = await fetch(draftUrl, { cache: 'no-store' });
         if (response.ok) {
           const contentRaw = await response.text();

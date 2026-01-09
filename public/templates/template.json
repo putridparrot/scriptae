@@ -11,7 +11,8 @@
       "owner": "putridparrot",
       "repo": "scriptae-sample",
       "postsPath": "content/posts",
-      "draftsPath": "content/drafts"
+      "draftsPath": "content/drafts",
+      "cacheBusting": true
     }
   },
   "theme": {
